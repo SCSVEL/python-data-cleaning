@@ -1,0 +1,54 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10, 3.11]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Syntax check (compile all .py files)
+        run: |
+          # compile Python files to catch syntax errors
+          files=$(git ls-files '*.py' || true)
+          if [ -n "$files" ]; then
+            python -m py_compile $files
+          else
+            echo "No python files found to check."
+          fi
+
+      - name: Run tests (if present)
+        run: |
+          # If tests exist, run pytest. Otherwise skip.
+          if [ -f pytest.ini ] || [ -d tests ] || git ls-files "*_test.py" | grep -q .; then
+            python -m pip install pytest || true
+            pytest -q
+          else
+            echo "No tests found, skipping pytest."
+          fi
