@@ -1,0 +1,8 @@
+id,name,email,signup_date,amount,notes
+1, Alice,alice@example.com,2025-01-01,100,Good
+2,bob ,BOB@EXAMPLE.COM,01/02/2025,200.0,good
+2,CHARLIE,charlie@example.com,2025-03-03T00:00:00,N/A,GOOD
+3,David,,March 4, 2025, 400,Needs follow-up
+4,Eve,eve@example.com,2025-05-05,500.50,
+,Frank,frank@example.com,,600,
+2,bob ,BOB@EXAMPLE.COM,01/02/2025,200.0,good
